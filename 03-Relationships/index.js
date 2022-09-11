@@ -1,5 +1,5 @@
-const express = require('express');
-const { default: mongoose } = require('mongoose');
+const express = require("express");
+const { default: mongoose } = require("mongoose");
 const app = express();
 
 //its convert json body to javascript object while posting the data
@@ -7,9 +7,7 @@ app.use(express.json());
 
 //connect mongoose with mongoDB
 const connect = () => {
-  return mongoose.connect(
-    'mongodb+srv://dhaval:dhaval_123@cluster0.ljuvz.mongodb.net/express-relationship'
-  );
+  return mongoose.connect("mongodb://localhost:27017/relationships");
 };
 
 //starting the server
@@ -19,7 +17,7 @@ app.listen(3000, async () => {
   } catch (err) {
     console.log(err);
   }
-  console.log('listening on port 3000');
+  console.log("listening on port 3000");
 });
 
 //USER SCHEMA
@@ -36,7 +34,7 @@ const userSchema = new mongoose.Schema(
 );
 
 //creating a model(step 2)
-const User = mongoose.model('user', userSchema); //"users" colllection will automatically ceated when you write "user"(it automatically converts to plural)
+const User = mongoose.model("user", userSchema); //"users" colllection will automatically ceated when you write "user"(it automatically converts to plural)
 
 //POST SCHEMA
 //creating a schema(step 1)
@@ -47,7 +45,7 @@ const postSchema = new mongoose.Schema(
     //id from user Schema
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'user',
+      ref: "user",
       required: true,
     },
   },
@@ -56,7 +54,7 @@ const postSchema = new mongoose.Schema(
 );
 
 //creating a model(step 2)
-const Post = mongoose.model('post', postSchema);
+const Post = mongoose.model("post", postSchema);
 
 //COMMENT SCHEMA
 //creating a schema(step 1)
@@ -65,13 +63,13 @@ const commentSchema = new mongoose.Schema(
     body: { type: String, required: true },
     postId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'post',
+      ref: "post",
       required: true,
     },
     //multiple users can comment one user post so that is why we also need the user id
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'user',
+      ref: "user",
       required: true,
     },
   },
@@ -80,23 +78,23 @@ const commentSchema = new mongoose.Schema(
 );
 
 //creating a model(step 2)
-const Comment = mongoose.model('comment', commentSchema);
+const Comment = mongoose.model("comment", commentSchema);
 
 //CRUD for users(browser url:http://localhost:3000/users)
 
 //read
-app.get('/users', async (req, res) => {
+app.get("/users", async (req, res) => {
   try {
     //plural(its just a standard convention because there will be lot of user)
     const users = await User.find().lean().exec();
 
     return res.status(200).send({ users: users });
   } catch (err) {
-    return res.status(500).send({ message: 'Something went wrong' });
+    return res.status(500).send({ message: "Something went wrong" });
   }
 });
 //getting a single user
-app.get('/users/:id', async (req, res) => {
+app.get("/users/:id", async (req, res) => {
   try {
     // console.log(req.params);
     //singular
@@ -109,7 +107,7 @@ app.get('/users/:id', async (req, res) => {
 });
 
 //post
-app.post('/users', async (req, res) => {
+app.post("/users", async (req, res) => {
   try {
     //singular
     const user = await User.create(req.body).lean().exec();
@@ -121,7 +119,7 @@ app.post('/users', async (req, res) => {
 });
 
 //update
-app.patch('/users/:id', async (req, res) => {
+app.patch("/users/:id", async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -136,7 +134,7 @@ app.patch('/users/:id', async (req, res) => {
 });
 
 //delete
-app.delete('/users/:id', async (req, res) => {
+app.delete("/users/:id", async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id).lean().exec();
 
@@ -149,17 +147,17 @@ app.delete('/users/:id', async (req, res) => {
 //CRUD for posts(browser url:http://localhost:3000/posts)
 
 //read
-app.get('/posts', async (req, res) => {
+app.get("/posts", async (req, res) => {
   try {
     const posts = await Post.find().lean().exec();
 
     return res.status(200).send({ posts: posts });
   } catch (err) {
-    return res.status(500).send({ message: 'Something went wrong' });
+    return res.status(500).send({ message: "Something went wrong" });
   }
 });
 //getting a single post
-app.get('/posts/:id', async (req, res) => {
+app.get("/posts/:id", async (req, res) => {
   try {
     const post = await Post.findById(req.params.id).lean().exec();
 
@@ -170,7 +168,7 @@ app.get('/posts/:id', async (req, res) => {
 });
 
 //post
-app.post('/posts', async (req, res) => {
+app.post("/posts", async (req, res) => {
   try {
     //singular
     const post = await Post.create(req.body).lean().exec();
@@ -182,7 +180,7 @@ app.post('/posts', async (req, res) => {
 });
 
 //update
-app.patch('/posts/:id', async (req, res) => {
+app.patch("/posts/:id", async (req, res) => {
   try {
     const post = await Post.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -197,7 +195,7 @@ app.patch('/posts/:id', async (req, res) => {
 });
 
 //delete
-app.delete('/posts/:id', async (req, res) => {
+app.delete("/posts/:id", async (req, res) => {
   try {
     const post = await Post.findByIdAndDelete(req.params.id).lean().exec();
 
@@ -210,17 +208,17 @@ app.delete('/posts/:id', async (req, res) => {
 //CRUD for comments(browser url:http://localhost:3000/comments)
 
 //read
-app.get('/comments', async (req, res) => {
+app.get("/comments", async (req, res) => {
   try {
     const comments = await Comment.find().lean().exec();
 
     return res.status(200).send({ comments: comments });
   } catch (err) {
-    return res.status(500).send({ message: 'Something went wrong' });
+    return res.status(500).send({ message: "Something went wrong" });
   }
 });
 //getting a single post
-app.get('/comments/:id', async (req, res) => {
+app.get("/comments/:id", async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id).lean().exec();
 
@@ -231,7 +229,7 @@ app.get('/comments/:id', async (req, res) => {
 });
 
 //post
-app.post('/comments', async (req, res) => {
+app.post("/comments", async (req, res) => {
   try {
     //singular
     const comment = await Comment.create(req.body).lean().exec();
@@ -243,7 +241,7 @@ app.post('/comments', async (req, res) => {
 });
 
 //update
-app.patch('/comments/:id', async (req, res) => {
+app.patch("/comments/:id", async (req, res) => {
   try {
     const comment = await Comment.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -258,7 +256,7 @@ app.patch('/comments/:id', async (req, res) => {
 });
 
 //delete
-app.delete('/comments/:id', async (req, res) => {
+app.delete("/comments/:id", async (req, res) => {
   try {
     const comment = await Comment.findByIdAndDelete(req.params.id)
       .lean()
